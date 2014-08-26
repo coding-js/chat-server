@@ -1,6 +1,6 @@
 var http = require('http');
 var socketio = require('socket.io');
-var sockets
+var redis = require('socket.io-redis');
 
 var httpServer = http.createServer(function(req, res){
   res.writeHead(404, "NOT FOUND");
@@ -8,6 +8,8 @@ var httpServer = http.createServer(function(req, res){
 });
 
 var socketIOServer = socketio(httpServer);
+
+socketIOServer.adapter(redis({ host: '104.131.41.23', port: 6379 }));
 
 var rooms = [
   "The purple room",
@@ -54,6 +56,7 @@ socketIOServer.on('connection', function(socket) {
   });
 });
 
-httpServer.listen(3030, function() {
-  console.log("Listening on port 3030");
+var port = process.env.PORT || 3030;
+httpServer.listen(port, function() {
+  console.log("Listening on port " + port);
 });
